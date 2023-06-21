@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prod-contextfree-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: contextfree-network-node
+  serviceName: node-setup
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: contextfree-network-node
+    spec:
+      containers:
+      - name: contextfree-network-node-container
+        image: atactr/automata:contextfree-v0.1.2-rc5
+        ports:
+        - containerPort: 30333
+          name: tcp-port
+        - containerPort: 9933
+          name: http-port
+        - containerPort: 9944
+          name: web-socket-port
+        volumeMounts:
+        - name: prod-node-pv-volume
+          mountPath: /mnt/data
+      volumes:
+      - name: prod-node-pv-volume
+        persistentVolumeClaim:
+          claimName: prod-node-pv-claim

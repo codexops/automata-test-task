@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: default
+  name: prod-node-setup-ingress
+  annotations:
+     nginx.ingress.kubernetes.io/rewrite-target: /
+     alb.ingress.kubernetes.io/scheme: internet-facing
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: "ab8c4cdf64dc74a5b8725415c7bdb026-1932361187.us-west-2.elb.amazonaws.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prod-node-setup
+                port:
+                  number: 80
